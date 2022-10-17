@@ -13,15 +13,17 @@ services:
     healthcheck:
       # test: "mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD"
       test: "mysqladmin ping --silent"
+      interval: 1s
       timeout: 1s
       retries: 1
       start_period: 4s
     volumes:
-      - mysql_data:/vr/lib/mysql:rw
+      - mysql_data:/var/lib/mysql:rw
   
   django:
-    build: .
-    command: bash -c "python3 project1/manage.py makemigrations sqlDjango && python3 project1/manage.py migrate sqlDjango && python3 project1/manage.py runserver 0.0.0.0:8200"
+    # build: .
+    image: ghcr.io/samhitha18/mysql-docker:latest
+    command: bash -c "python3 project1/manage.py makemigrations sqlDjango && python3 project1/manage.py migrate && python3 project1/manage.py runserver 0.0.0.0:8200"
     restart: always
     ports:
       - '8989:8200'
